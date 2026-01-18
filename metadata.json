@@ -1,0 +1,8 @@
+{
+  "name": "My Growth Space",
+  "description": "The definitive Atomic Habits toolkit. Features local-first privacy, AI-driven routine analysis, and reactive progress systems.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation"
+  ]
+}
