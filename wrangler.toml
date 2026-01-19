@@ -1,0 +1,42 @@
+name = "my-growth-space"
+main = "dist/index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["streams_enable_constructors"]
+type = "javascript"
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "./"
+
+# Environment variables
+[env.production]
+name = "my-growth-space-prod"
+routes = [
+  { pattern = "mygrowthspace.dev/*", zone_name = "mygrowthspace.dev" }
+]
+vars = { ENVIRONMENT = "production" }
+
+[env.staging]
+name = "my-growth-space-staging"
+routes = [
+  { pattern = "staging.mygrowthspace.dev/*", zone_name = "mygrowthspace.dev" }
+]
+vars = { ENVIRONMENT = "staging" }
+
+[env.development]
+name = "my-growth-space-dev"
+vars = { ENVIRONMENT = "development" }
+
+# Analytics Engine
+[[analytics_engine_datasets]]
+dataset = "growth_space_analytics"
+
+# KV Storage (optional - para cacheo)
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-namespace-id"
+
+# Limits
+limits = { cpu_seconds = 50 }
