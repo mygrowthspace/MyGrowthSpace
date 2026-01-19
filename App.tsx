@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import { Login } from './components/Login';
 import { SignUp } from './components/SignUp';
-import { signOut } from './services/supabaseClient';
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
@@ -44,6 +43,7 @@ const AppContent: React.FC = () => {
           <h1 className="text-3xl font-bold">My Growth Space</h1>
           <button
             onClick={async () => {
+              const { signOut } = await import('./services/supabaseClient');
               await signOut();
               window.location.reload();
             }}
