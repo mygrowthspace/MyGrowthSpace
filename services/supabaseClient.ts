@@ -215,3 +215,191 @@ export const logHabitCompletion = async (userId: string, habitId: string, date: 
     return false;
   }
 };
+
+// ============================================
+// AUTENTICACIÓN
+// ============================================
+
+/**
+ * Register a new user
+ */
+export const signUp = async (email: string, password: string, name: string) => {
+  if (!supabase) {
+    console.error('❌ Supabase is not configured');
+    return { user: null, error: 'Supabase not configured' };
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name }
+      }
+    });
+
+    if (error) {
+      console.error('❌ Sign up error:', error.message);
+      return { user: null, error: error.message };
+    }
+
+    return { user: data.user, error: null };
+  } catch (e: any) {
+    console.error('❌ Sign up exception:', e.message);
+    return { user: null, error: e.message };
+  }
+};
+
+/**
+ * Login with email and password
+ */
+export const signIn = async (email: string, password: string) => {
+  if (!supabase) {
+    console.error('❌ Supabase is not configured');
+    return { user: null, error: 'Supabase not configured' };
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      console.error('❌ Sign in error:', error.message);
+      return { user: null, error: error.message };
+    }
+
+    return { user: data.user, error: null };
+  } catch (e: any) {
+    console.error('❌ Sign in exception:', e.message);
+    return { user: null, error: e.message };
+  }
+};
+
+/**
+ * Logout
+ */
+export const signOut = async () => {
+  if (!supabase) {
+    console.error('❌ Supabase is not configured');
+    return { error: 'Supabase not configured' };
+  }
+
+  try {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error('❌ Sign out error:', error.message);
+      return { error: error.message };
+    }
+
+    return { error: null };
+  } catch (e: any) {
+    console.error('❌ Sign out exception:', e.message);
+    return { error: e.message };
+  }
+};
+
+/**
+ * Get current session
+ */
+export const getSession = async () => {
+  if (!supabase) {
+    console.error('❌ Supabase is not configured');
+    return null;
+  }
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session;
+  } catch (e: any) {
+    console.error('❌ Get session exception:', e.message);
+    return null;
+  }
+};
+
+/**
+ * Get current user
+ */
+export const getUser = async () => {
+  if (!supabase) {
+    console.error('❌ Supabase is not configured');
+    return null;
+  }
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+  } catch (e: any) {
+    console.error('❌ Get user exception:', e.message);
+    return null;
+  }
+};
+
+/**
+ * Create user profile after sign up
+ */
+export const createUserProfile = async (
+  userId: string,
+  email: string,
+  name: string,
+  identityStatement: string,
+  focusAreas: string[]
+) => {
+  if (!supabase) {
+    console.error('❌ Supabase is not configured');
+    return { error: 'Supabase not configured' };
+  }
+
+  try {
+    const { error } = await supabase
+      .from('user_profiles')
+      .insert({
+        user_id: userId,
+        email,
+        name,
+        identity_statement: identityStatement,
+        focus_areas: focusAreas
+      });
+
+    if (error) {
+      console.error('❌ Error creating profile:', error.message);
+      return { error: error.message };
+    }
+
+    return { error: null };
+  } catch (e: any) {
+    console.error('❌ Create profile exception:', e.message);
+    return { error: e.message };
+  }
+};
+
+/**
+ * Get user profile
+ */
+export const getUserProfile = async (userId: string) => {
+  if (!supabase) {
+    console.error('❌ Supabase is not configured');
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (error) {
+      console.error('❌ Error fetching profile:', error.message);
+      return null;
+    }
+
+    return data;
+  } catch (e: any) {
+    console.error('❌ Get profile exception:', e.message);
+    return null;
+  }
+};
+
