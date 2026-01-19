@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getSession, signOut } from '../services/supabaseClient';
+import { getSession, signOut, supabase } from '../services/supabaseClient';
 import { Session, User } from '@supabase/supabase-js';
 
 interface AuthContextType {
@@ -35,7 +35,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkAuth();
 
     // Listen for auth changes
-    const { supabase } = await import('../services/supabaseClient');
     if (supabase) {
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (_event, session) => {
